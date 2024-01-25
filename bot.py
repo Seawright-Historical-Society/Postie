@@ -36,10 +36,9 @@ async def on_ready():
 
 @bot.command()
 async def post(ctx):
-
-    # check if message is from the target user and in the restricted channel
-    # if there's a way to only look at messages in the broadcast channel instead of scanning literally every message that'd be great
-    if ctx.author.id == broadcasterUserID and ctx.channel.id == broadcastChannel:
+    required_role = discord.utils.get(ctx.guild.roles, name='broadcaster')
+    # check if message is from the Franki/someone with the 'broadcaster' role and in the restricted channel
+    if (ctx.author.id == broadcasterUserID or required_role in ctx.author.roles) and ctx.channel.id == broadcastChannel:
 
         # extract the output channel id from the broadcaster's message
         outputChannelID = parse_outputChannelID(ctx.message.content) 
