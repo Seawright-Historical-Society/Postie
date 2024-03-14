@@ -22,7 +22,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 # --    functions    --
 def tprint(message):                            # just for timestamps
-    print(str(datetime.datetime.utcnow()), str(message))
+    print(str(datetime.datetime.now()), str(message))
 
 def parse_outputChannelID(message_content):
     # Extract the channel mention from the channel mention syntax
@@ -41,10 +41,10 @@ async def post(ctx):
     if (ctx.author.id == broadcasterUserID or required_role in ctx.author.roles) and ctx.channel.id == broadcastChannel:
 
         # extract the output channel id from the broadcaster's message
-        outputChannelID = parse_outputChannelID(ctx.message.content) 
+        outputChannelID = int(parse_outputChannelID(ctx.message.content).strip("<>#"))
 
         # get the output channel
-        outputChannel = discord.utils.get(bot.get_all_channels(), mention=outputChannelID)
+        outputChannel = bot.get_channel(outputChannelID)
 
         # check if the message has content before sending
         if ctx.message.content.split(' ') != ctx.message.content.split(' ')[0:2]:
@@ -54,7 +54,7 @@ async def post(ctx):
             tprint(f"@{ctx.author} -> {outputChannel}: {announcement_message}")
 
             # send the announcement to the output channel
-            sent_message = await outputChannel.send(announcement_message)
+            await outputChannel.send(announcement_message)
 
         # send attached images
         for attachment in ctx.message.attachments:
